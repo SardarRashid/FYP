@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navv_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/navv_home" />
+    <item
+        android:id="@+id/navv_account"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="@string/navv_account" />
+    <item
+        android:id="@+id/navv_notification"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/navv_notification" />
+</menu>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/profile" android:title="Profile" android:icon="@drawable/ic_person"/>
+    <item android:id="@+id/trackorder" android:title="Track Order" android:icon="@drawable/if_ic_track_changes_48px_351989"/>
+    <item android:id="@+id/notification" android:title="Notification" android:icon="@drawable/ic_notifications_black_24dp"/>
+    <item android:id="@+id/Chat" android:title="Chat With Us" android:icon="@drawable/ic_chat_bubble_black_24dp"/>
+    <item android:id="@+id/request" android:title="Submit Special Request" android:icon="@drawable/requst"/>
+    <item android:id="@+id/feedback" android:title="Feed Back" android:icon="@drawable/ic_feedback_black_24dp"/>
+    <item android:id="@+id/about" android:title="About Us" android:icon="@drawable/if_about_2639759"/>
+
+</menu>

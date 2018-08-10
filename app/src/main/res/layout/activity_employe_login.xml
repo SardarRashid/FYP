@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.rashidsaddique.fyp.Employe_login"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@color/colorBackground">
+    <ImageView
+        android:id="@+id/FormBack"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_img4" />
+
+    <ImageView
+        android:id="@+id/FromLogo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_mr__fix_it" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_below="@id/FromLogo">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/trans_white_rectangle"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="50dp"
+
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter Your Login Detail"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:paddingStart="60dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="10dp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter Number or Email"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:layout_marginBottom="30dp"
+                android:paddingStart="80dp"
+                android:paddingEnd="10dp"
+                />
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Email"
+                android:background="@drawable/rounded_white"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:drawableLeft="@drawable/ic_person"
+                android:textSize="14sp"
+                android:drawablePadding="5dp"
+                android:paddingStart="10dp"
+                android:id="@+id/employe_email_login"
+                android:layout_marginBottom="10dp"
+                />
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Password"
+                android:background="@drawable/rounded_white"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:drawableLeft="@drawable/ic_enhanced_encryption"
+                android:textSize="14sp"
+                android:drawablePadding="5dp"
+                android:paddingStart="10dp"
+                android:inputType="textPassword"
+                android:id="@+id/employe_pass_login"
+                android:layout_marginBottom="10dp"/>
+            <Button
+                android:id="@+id/btn_employe_reg"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textColor="@color/white"
+                android:text="Sign up"
+                android:textStyle="normal"
+                android:background="@drawable/login_button"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="95dp"
+                android:layout_marginRight="35dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"/>
+            <Button
+                android:id="@+id/btn_emploe_login"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginTop="-067dp"
+                android:layout_marginLeft="60dp"
+                android:background="@drawable/login_button"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:textStyle="normal" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        />
+
+</RelativeLayout>
