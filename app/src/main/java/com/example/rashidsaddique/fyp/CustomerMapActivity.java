@@ -44,6 +44,8 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
     LocationRequest mLocationRequest;
     private Button mLogout, mRequest;
     private LatLng WorkLocation;
+    private  Boolean RequestbBol = false;
+    private Marker workMarker;
 
 
     @Override
@@ -61,7 +63,7 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(CustomerMapActivity.this, CustomerMapActivity.class);
+                Intent intent = new Intent(CustomerMapActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return;
@@ -70,16 +72,49 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
         mRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                if (RequestbBol){
+                    geoQuery.removeAllListeners();
+                    RequestbBol = false;
+                    employeeLocationRef.removeEventListener(employeeLocationRefListener);
 
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("CustomerRequest");
-                GeoFire geoFire = new GeoFire(reference);
-                geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
-                WorkLocation = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(WorkLocation).title("Work Here"));
-                mRequest.setText("Getting Employee For You");
 
-                getClosestEmployee();
+                    if(EmployeefoundID != null){
+                        DatabaseReference employeeRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Employee").child(EmployeefoundID);
+                        employeeRef.setValue(true);
+                        EmployeefoundID = null;
+
+                    }
+                    EmployeeFound =false;
+                    radius = 1;
+                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("CustomerRequest");
+                    GeoFire geoFire = new GeoFire(reference);
+                    geoFire.removeLocation(userId);
+
+                    if(workMarker != null){
+                        workMarker.remove();
+                    }
+                    mRequest.setText("Call Employee");
+
+                }else {
+                    RequestbBol= true;
+                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("CustomerRequest");
+                    GeoFire geoFire = new GeoFire(reference);
+                    geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+                    WorkLocation = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+                    workMarker = mMap.addMarker(new MarkerOptions().position(WorkLocation).title("Work Here"));
+
+                    mRequest.setText("Getting Employee For You");
+
+                    getClosestEmployee();
+
+
+                }
+
+
+
             }
         });
     }
@@ -87,16 +122,17 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
     private int radius  = 1;
     private boolean EmployeeFound = false;
     private String EmployeefoundID;
+    GeoQuery geoQuery;
     private void getClosestEmployee (){
         DatabaseReference EmployeeLocation = FirebaseDatabase.getInstance().getReference().child("EmployeesAvailable");
         GeoFire geoFire = new GeoFire(EmployeeLocation);
 
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(WorkLocation.latitude,WorkLocation.longitude), radius);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(WorkLocation.latitude,WorkLocation.longitude), radius);
         geoQuery.removeAllListeners();
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                if(!EmployeeFound) {
+                if(!EmployeeFound && RequestbBol) {
                     EmployeeFound = true;
                     EmployeefoundID = key;
 
@@ -143,12 +179,14 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
 
 
      private Marker mEmployeeMarker;
+    private  DatabaseReference employeeLocationRef;
+    private ValueEventListener employeeLocationRefListener;
     private void getEmployeeLocation(){
-        DatabaseReference employeeLocationRef = FirebaseDatabase.getInstance().getReference().child("EmployeesWorking").child(EmployeefoundID).child("l");
-        employeeLocationRef.addValueEventListener(new ValueEventListener() {
+        employeeLocationRef = FirebaseDatabase.getInstance().getReference().child("EmployeesWorking").child(EmployeefoundID).child("l");
+        employeeLocationRefListener = employeeLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if(dataSnapshot.exists() && RequestbBol){
                     List<Object> map = (List<Object>)dataSnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
@@ -163,6 +201,22 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
                     if(mEmployeeMarker != null){
                         mEmployeeMarker.remove();
                     }
+                    Location loc1 = new Location("");
+                    loc1.setLatitude(WorkLocation.latitude);
+                    loc1.setLongitude(WorkLocation.longitude);
+
+                    Location loc2 = new Location("");
+                    loc2.setLatitude(employeeLatLng.latitude);
+                    loc2.setLongitude(employeeLatLng.longitude);
+
+                    float distance = loc1.distanceTo(loc2);
+
+                    if(distance<100){
+                        mRequest.setText("Employee is here");
+                    }else {
+                        mRequest.setText("Employee Found" + String.valueOf(distance));
+                    }
+
                     mEmployeeMarker = mMap.addMarker(new MarkerOptions().position(employeeLatLng).title("Your Employee"));
 
 

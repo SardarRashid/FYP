@@ -2,6 +2,7 @@ package com.example.rashidsaddique.fyp;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -88,6 +92,33 @@ employe_customer_btn = (Button) findViewById(R.id.employe_btn);
         });
 
     }
+    private String userType1;
+    private String userType2;
+    public void CheckUserType(){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference customerDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers");
+        customerDb.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (dataSnapshot.getKey().equals(user.getUid())){
+                    userType1 = "Customers";
+                    userType2 = "Employees";
+                }
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
 
     @Override
     protected void onStart() {
@@ -100,6 +131,7 @@ employe_customer_btn = (Button) findViewById(R.id.employe_btn);
         super.onStop();
         firebaseauth.removeAuthStateListener(firebaseauthListener);
     }
+
 
 //        userEmail = (AutoCompleteTextView) findViewById(R.id.userEmaillogin);
 //        userpassword =(AutoCompleteTextView) findViewById(R.id.userPasswordlogin);
