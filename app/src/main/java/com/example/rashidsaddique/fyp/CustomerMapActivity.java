@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -44,7 +45,7 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
     LocationRequest mLocationRequest;
     private Button mLogout, mRequest;
     private LatLng WorkLocation;
-    private  Boolean RequestbBol = false;
+    private  Boolean RequestBol = false;
     private Marker workMarker;
 
 
@@ -72,16 +73,16 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
         mRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (RequestbBol){
+                if (RequestBol){
                     geoQuery.removeAllListeners();
-                    RequestbBol = false;
+                    RequestBol = false;
                     employeeLocationRef.removeEventListener(employeeLocationRefListener);
 
 
-                    if(EmployeefoundID != null){
-                        DatabaseReference employeeRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Employee").child(EmployeefoundID);
+                    if(EmployeeFoundID != null){
+                        DatabaseReference employeeRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Employees").child(EmployeeFoundID);
                         employeeRef.setValue(true);
-                        EmployeefoundID = null;
+                        EmployeeFoundID = null;
 
                     }
                     EmployeeFound =false;
@@ -97,14 +98,14 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
                     mRequest.setText("Call Employee");
 
                 }else {
-                    RequestbBol= true;
+                    RequestBol= true;
                     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("CustomerRequest");
                     GeoFire geoFire = new GeoFire(reference);
                     geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
                     WorkLocation = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-                    workMarker = mMap.addMarker(new MarkerOptions().position(WorkLocation).title("Work Here"));
+                    workMarker = mMap.addMarker(new MarkerOptions().position(WorkLocation).title("Work Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.work_icon1)));
 
                     mRequest.setText("Getting Employee For You");
 
@@ -121,7 +122,7 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
 
     private int radius  = 1;
     private boolean EmployeeFound = false;
-    private String EmployeefoundID;
+    private String EmployeeFoundID;
     GeoQuery geoQuery;
     private void getClosestEmployee (){
         DatabaseReference EmployeeLocation = FirebaseDatabase.getInstance().getReference().child("EmployeesAvailable");
@@ -132,11 +133,11 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                if(!EmployeeFound && RequestbBol) {
+                if(!EmployeeFound && RequestBol) {
                     EmployeeFound = true;
-                    EmployeefoundID = key;
+                    EmployeeFoundID = key;
 
-                    DatabaseReference employeeRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Employee").child(EmployeefoundID);
+                    DatabaseReference employeeRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Employees").child(EmployeeFoundID);
                     String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     HashMap map = new HashMap();
                     map.put("CustomerWorkId", customerId);
@@ -182,11 +183,11 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
     private  DatabaseReference employeeLocationRef;
     private ValueEventListener employeeLocationRefListener;
     private void getEmployeeLocation(){
-        employeeLocationRef = FirebaseDatabase.getInstance().getReference().child("EmployeesWorking").child(EmployeefoundID).child("l");
+        employeeLocationRef = FirebaseDatabase.getInstance().getReference().child("EmployeesWorking").child(EmployeeFoundID).child("l");
         employeeLocationRefListener = employeeLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && RequestbBol){
+                if(dataSnapshot.exists() && RequestBol){
                     List<Object> map = (List<Object>)dataSnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
@@ -217,7 +218,7 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
                         mRequest.setText("Employee Found" + String.valueOf(distance));
                     }
 
-                    mEmployeeMarker = mMap.addMarker(new MarkerOptions().position(employeeLatLng).title("Your Employee"));
+                    mEmployeeMarker = mMap.addMarker(new MarkerOptions().position(employeeLatLng).title("Your Employee").icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker)));
 
 
                 }
@@ -268,9 +269,6 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
         LatLng latLng = new LatLng(location.getLongitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-
-
-
     }
 
     @SuppressWarnings("deprecation")

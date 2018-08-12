@@ -2,6 +2,7 @@ package com.example.rashidsaddique.fyp;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -129,7 +131,7 @@ public class EmployeeMapActivity extends FragmentActivity implements OnMapReadyC
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
                     LatLng employeeLatLng = new LatLng(locationLat,locationLng);
-                    workLocationMarker = mMap.addMarker(new MarkerOptions().position(employeeLatLng).title("Work Location"));
+                    workLocationMarker = mMap.addMarker(new MarkerOptions().position(employeeLatLng).title("Work Location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.work_icon1)));
 
                 }
             }
