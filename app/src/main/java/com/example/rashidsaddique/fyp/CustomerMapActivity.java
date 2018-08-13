@@ -17,6 +17,7 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Response;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -58,7 +59,7 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mLogout = (Button) findViewById(R.id.EmployeeLogout);
+        mLogout = (Button) findViewById(R.id.CustomerLogout);
         mRequest = (Button) findViewById(R.id.EmployeeRequestButton);
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +75,8 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 if (RequestBol){
-                    geoQuery.removeAllListeners();
                     RequestBol = false;
+                    geoQuery.removeAllListeners();
                     employeeLocationRef.removeEventListener(employeeLocationRefListener);
 
 
@@ -94,6 +95,9 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
 
                     if(workMarker != null){
                         workMarker.remove();
+                    }
+                    if (mEmployeeMarker != null){
+                        mEmployeeMarker.remove();
                     }
                     mRequest.setText("Call Employee");
 
@@ -126,10 +130,11 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
     GeoQuery geoQuery;
     private void getClosestEmployee (){
         DatabaseReference EmployeeLocation = FirebaseDatabase.getInstance().getReference().child("EmployeesAvailable");
-        GeoFire geoFire = new GeoFire(EmployeeLocation);
 
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(WorkLocation.latitude,WorkLocation.longitude), radius);
+        GeoFire geoFire = new GeoFire(EmployeeLocation);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(WorkLocation.latitude, WorkLocation.longitude), radius);
         geoQuery.removeAllListeners();
+
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
@@ -183,6 +188,7 @@ public class CustomerMapActivity  extends FragmentActivity implements OnMapReady
     private  DatabaseReference employeeLocationRef;
     private ValueEventListener employeeLocationRefListener;
     private void getEmployeeLocation(){
+
         employeeLocationRef = FirebaseDatabase.getInstance().getReference().child("EmployeesWorking").child(EmployeeFoundID).child("l");
         employeeLocationRefListener = employeeLocationRef.addValueEventListener(new ValueEventListener() {
             @Override

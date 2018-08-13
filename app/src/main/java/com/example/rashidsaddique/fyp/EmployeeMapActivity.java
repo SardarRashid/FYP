@@ -47,6 +47,7 @@ public class EmployeeMapActivity extends FragmentActivity implements OnMapReadyC
     Location mLastLocation;
     LocationRequest mLocationRequest;
     private Button mLogout;
+    private Boolean isLoggingOut = false;
 
     private SupportMapFragment mapFragment;
 
@@ -74,6 +75,8 @@ public class EmployeeMapActivity extends FragmentActivity implements OnMapReadyC
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isLoggingOut = true;
+                disconnectEmployee();
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(EmployeeMapActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -250,15 +253,20 @@ public class EmployeeMapActivity extends FragmentActivity implements OnMapReadyC
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    private void disconnectEmployee(){
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("EmployeesAvailable");
 
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(!isLoggingOut)
+            disconnectEmployee();
     }
 
 //        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
